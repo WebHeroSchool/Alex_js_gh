@@ -1,9 +1,13 @@
 let body = document.body;
-let urlHero = 'https://api.github.com/users/AlNeon';
+let url = window.location.toString();
+let arr = url.split('=');
+let userName = (arr[1] !== undefined && arr[1].length <= 15) ? arr[1] : 'AlNeon';
+let gitHub = `https://api.github.com/users/${userName}`;
 
-fetch(urlHero)
+fetch(gitHub)
     .then(res => res.json())
     .then(json => {
+
         let name = document.createElement('a');
         if (json.name != null) {
             name.innerHTML = json.name;
@@ -15,11 +19,7 @@ fetch(urlHero)
         body.append(name);
 
         let bio = document.createElement('h3');
-        if (json.bio != null) {
-            bio.innerHTML = json.bio;
-        } else {
-            bio.innerHTML = 'Описание профиля не доступно';
-        }
+        bio.innerHTML = (json.bio !== null) ? json.bio : 'Описание профиля не доступно';
         body.append(bio);
 
         let avatar = new Image(250, 250);
