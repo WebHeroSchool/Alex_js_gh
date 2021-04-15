@@ -5,20 +5,22 @@ setTimeout(function() {
 
 let body = document.body;
 let url = window.location.toString();
-let arr = url.split('=');
-let userName = (arr[1] !== undefined && arr[1].length <= 15) ? arr[1] : 'AlNeon';
-let gitHub = `https://api.github.com/users/${userName}`;
+let userName;
 
 let date = new Date();
 let getDate = new Promise((resolve, reject) => {
     setTimeout(() => date ? resolve(date) : reject('Текущее время не доступно'), 1000);
 })
 let getUrl = new Promise((resolve, reject) => {
-    setTimeout(() => url ? resolve(url) : reject('Не доступен'), 3000)
+    setTimeout(() => {
+        let arr = url.split('=');
+        userName = (arr[1] !== undefined && arr[1].length <= 15) ? arr[1] : 'AlNeon';
+        resolve(userName);
+    }, 3000);
 })
 
 Promise.all([getDate, getUrl])
-    .then(([date, url]) => fetch(gitHub))
+    .then(([date, url]) => fetch(`https://api.github.com/users/${userName}`))
     .then(res => res.json())
     .then(json => {
 
