@@ -1,25 +1,27 @@
 let body = document.body;
-let url = window.location.toString();
+let tempUrl = window.location.toString();
 let userName;
 let date;
+let url;
 
 let getDate = new Promise((resolve, reject) => {
     setTimeout(() => {
         date = new Date();
-        resolve(date);
+        date ? resolve(date) : reject('Текущее время не доступно');
     }, 1000);
 })
 
 let getUrl = new Promise((resolve, reject) => {
     setTimeout(() => {
-        let arr = url.split('=');
+        let arr = tempUrl.split('=');
         userName = (arr[1] !== undefined && arr[1].length <= 15) ? arr[1] : 'AlNeon';
-        resolve(userName);
+        url = `https://api.github.com/users/${userName}`;
+        resolve(url);
     }, 3000);
 })
 
 Promise.all([getDate, getUrl])
-    .then(([date, url]) => fetch(`https://api.github.com/users/${userName}`))
+    .then(([date, url]) => fetch(url))
     .then(res => res.json())
     .then(json => {
         preloader.classList.add('hidden');
